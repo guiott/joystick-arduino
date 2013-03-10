@@ -8,7 +8,7 @@ void TxData(void)
   TxBuff[0] = 64;  // Header = "@"
   TxBuff[1] = 0;   // broadcast
   TxBuff[2] = 100; // command = "d"
-  TxBuff[3] = 12;   // command length
+  TxBuff[3] = 13;   // command length
   TxBuff[4] = Joy[0] >> 8;
   TxBuff[5] = Joy[0];
   TxBuff[6] = Joy[1] >> 8;
@@ -17,20 +17,15 @@ void TxData(void)
   TxBuff[9] = Joy[2];
   TxBuff[10] = Joy[3] >> 8;
   TxBuff[11] = Joy[3];
-  
-  for (i=0; i<=11; i++)
+  TxBuff[12] = digitalRead(LedR) | (((LedGlight) > 3)<<1) | (digitalRead(LedY)<<2) | (SwitchOk<<4) | (PushOk<<5);
+
+  for (i=0; i<=12; i++)
   {
     ChkSum += TxBuff[i];
     Serial.write(TxBuff[i]);
   }
  
   Serial.write(ChkSum);
-
-  for(i=0; i<4; i++)
-  {
-    Joy[i]=0;
-  }
-  
 }
 
 boolean RxData(byte Cmd, byte Len)
